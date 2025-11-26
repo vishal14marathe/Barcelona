@@ -1,12 +1,12 @@
-import React from "react";
-import BarcelonaSafe from "./components/BarcelonaSafetyPage";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LocationPage from "./components/LocationPage";
 
-function App() {
+export default function App() {
   return (
-    <div>
-      <BarcelonaSafe />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/:slug" element={<LocationPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;

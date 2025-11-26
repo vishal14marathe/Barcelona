@@ -1,4 +1,5 @@
-import React from "react";
+import { useParams } from "react-router-dom";
+import locations from "../data/locations";
 import {
   LineChart,
   Line,
@@ -8,21 +9,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function BarcelonaSafe() {
-  const data = [
-    { month: "Jan", crime2024: 40, crime2025: 30 },
-    { month: "Feb", crime2024: 35, crime2025: 25 },
-    { month: "Mar", crime2024: 50, crime2025: 40 },
-    { month: "Apr", crime2024: 55, crime2025: 38 },
-    { month: "May", crime2024: 60, crime2025: 45 },
-    { month: "Jun", crime2024: 70, crime2025: 50 },
-    { month: "Jul", crime2024: 75, crime2025: 55 },
-    { month: "Aug", crime2024: 72, crime2025: 48 },
-    { month: "Sep", crime2024: 65, crime2025: 42 },
-    { month: "Oct", crime2024: 58, crime2025: 35 },
-    { month: "Nov", crime2024: 45, crime2025: 30 },
-    { month: "Dec", crime2024: 40, crime2025: 25 },
-  ];
+export default function LocationPage() {
+  const { slug } = useParams();
+  const data = locations.find((item) => item.slug === slug);
+
+  if (!data)
+    return <h1 className="p-20 text-3xl">404 - Location Not Found</h1>;
 
   return (
     <div className="min-h-screen w-full bg-white font-sans px-10 py-6">
@@ -54,37 +46,36 @@ export default function BarcelonaSafe() {
 
       {/* Main Section */}
       <div className="flex w-full items-start justify-between">
-        {/* Left Section */}
+        {/* Left Side */}
         <div className="max-w-xl">
           <h1 className="text-5xl font-extrabold text-gray-800 leading-snug mb-6">
-            Is <span className="text-gray-900">Barcelona Safe?</span>
+            Is <span className="text-gray-900">{data.name} Safe?</span>
             <span className="ml-3 text-indigo-600 text-5xl">🛡️</span>
           </h1>
 
           <p className="text-lg text-gray-600 mb-10">
-            Barcelona is generally safe for tourists with moderate precautions.
+            {data.description}
           </p>
 
           <div className="space-y-6 text-gray-700 text-lg">
-            <div className="flex items-center space-x-4">
-              <div className="w-7 h-7 rounded-lg bg-white shadow-md"></div>
-              <span>Pickpocketing in tourist areas.</span>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <div className="w-7 h-7 rounded-lg bg-white shadow-md"></div>
-              <span>Violent crime is rare.</span>
-            </div>
+            {data.risks.map((risk, index) => (
+              <div className="flex items-center space-x-4" key={index}>
+                <div className="w-7 h-7 rounded-lg bg-white shadow-md"></div>
+                <span>{risk}</span>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Right Card */}
         <div className="w-96 bg-white rounded-3xl p-8 shadow-xl">
-          <h2 className="text-2xl font-semibold mb-1">Barcelona</h2>
-          <p className="text-green-600 font-medium mb-5">(Generally Safe)</p>
+          <h2 className="text-2xl font-semibold mb-1">{data.name}</h2>
+          <p className="text-green-600 font-medium mb-5">
+            ({data.safetyStatus})
+          </p>
 
           <div className="flex items-center justify-between text-xl font-semibold mb-6">
-            <span>8.5</span>
+            <span>{data.rating}</span>
             <div className="flex-1 mx-2 h-6 bg-green-200 rounded-lg"></div>
             <span>10</span>
           </div>
@@ -92,7 +83,7 @@ export default function BarcelonaSafe() {
           {/* Crime Graph */}
           <div className="w-full h-56 mb-6">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
+              <LineChart data={data.chartData}>
                 <XAxis dataKey="month" stroke="#555" />
                 <YAxis stroke="#555" />
                 <Tooltip />
